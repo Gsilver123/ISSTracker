@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">ISSTracker</string>
+
+    <string name="current_location">ISS Current Location:</string>
+    <string name="latitude">Latitude:</string>
+    <string name="longitude">Longitude:</string>
+    <string name="view_on_map">View On Map!</string>
 </resources>
