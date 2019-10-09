@@ -11,9 +11,13 @@ import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
@@ -80,6 +84,12 @@ public class MainActivity extends AppCompatActivity {
                 .getCurrentCoordinates()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                .repeatWhen(new Func1<Observable<? extends Void>, Observable<?>>() {
+                    @Override
+                    public Observable<?> call(Observable<? extends Void> observable) {
+                        return observable.delay(2, TimeUnit.SECONDS);
+                    }
+                })
                 .subscribe(new Observer<Coordinate>() {
                     @Override
                     public void onCompleted() {
@@ -94,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onNext(Coordinate coordinate) {
                         assert coordinate != null;
-                        Log.d(TAG, "TimeStamp: " + coordinate.getTimeStamp());
                         mLatitudeTextView.setText(String.valueOf(coordinate.getLatitude()));
                         mLongitudeTextView.setText(String.valueOf(coordinate.getLongitude()));
                     }
