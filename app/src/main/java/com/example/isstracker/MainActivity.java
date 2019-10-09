@@ -5,9 +5,11 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -20,7 +22,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     private static int MY_PERMISSIONS_INTERNET;
@@ -36,9 +38,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mLatitudeTextView = findViewById(R.id.latitude_position_text_view);
-        mLongitudeTextView = findViewById(R.id.longitude_position_text_view);
-        mViewOnMapButton = findViewById(R.id.view_on_map_btn);
+        initializeViewVariables();
+        mViewOnMapButton.setOnClickListener(this);
 
         requestPermissions();
     }
@@ -64,6 +65,12 @@ public class MainActivity extends AppCompatActivity {
                 getCurrentCoordinates();
             }
         }
+    }
+
+    private void initializeViewVariables() {
+        mLatitudeTextView = findViewById(R.id.latitude_position_text_view);
+        mLongitudeTextView = findViewById(R.id.longitude_position_text_view);
+        mViewOnMapButton = findViewById(R.id.view_on_map_btn);
     }
 
     private void requestPermissions() {
@@ -108,5 +115,13 @@ public class MainActivity extends AppCompatActivity {
                         mLongitudeTextView.setText(String.valueOf(coordinate.getLongitude()));
                     }
                 });
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.view_on_map_btn) {
+            Intent intent = new Intent(this, MapFragment.class);
+            startActivity(intent);
+        }
     }
 }
