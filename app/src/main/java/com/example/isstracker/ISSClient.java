@@ -82,7 +82,7 @@ class ISSClient {
                 return coordinate;
             }
 
-            private Coordinate setLatAndLong(
+            private void setLatAndLong(
                     Coordinate coordinate, JsonReader reader) throws IOException{
                 reader.beginObject();
                 while (reader.hasNext()) {
@@ -99,8 +99,6 @@ class ISSClient {
                     }
                 }
                 reader.endObject();
-
-                return coordinate;
             }
 
             @Override
