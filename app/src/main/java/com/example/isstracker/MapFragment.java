@@ -1,10 +1,12 @@
 package com.example.isstracker;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
@@ -20,8 +22,10 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-public class MapFragment extends AppCompatActivity implements OnMapReadyCallback {
+public class MapFragment extends AppCompatActivity
+        implements OnMapReadyCallback, View.OnClickListener {
 
     private CoordinateViewModel mCoordinatedModel;
     private Marker mISSMarker;
@@ -45,8 +49,18 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
 
         mCoordinatedModel = ViewModelProviders.of(this).get(CoordinateViewModel.class);
 
+        FloatingActionButton backFloatingActionButton = findViewById(R.id.back_floating_action_btn);
+        backFloatingActionButton.setOnClickListener(this);
+
         ISSClient.get().setViewModel(mCoordinatedModel);
         setObserver();
+        MainActivity.maybeRequestPermissionsAndStartObserving(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        ISSClient.get().unSubscribeSubscription();
+        super.onDestroy();
     }
 
     private void setObserver() {
@@ -86,5 +100,14 @@ public class MapFragment extends AppCompatActivity implements OnMapReadyCallback
                 .visible(false)
                 .icon(BitmapDescriptorFactory.fromBitmap(bitmapIcon)));
         Log.d("Map", "Made it");
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.back_floating_action_btn) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 }

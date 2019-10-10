@@ -116,6 +116,10 @@ class ISSClient {
     }
 
     void observeCurrentCoordinates() {
+        if (mCoordinateModel == null) {
+            return;
+        }
+
         mSubscription = ISSClient.get()
                 .getCurrentCoordinates()
                 .subscribeOn(Schedulers.io())

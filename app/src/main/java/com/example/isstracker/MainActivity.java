@@ -7,6 +7,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         ISSClient.get().setViewModel(mCoordinateModel);
         setObserver();
-        requestPermissions();
+        maybeRequestPermissionsAndStartObserving(this);
     }
 
     @Override
@@ -68,11 +69,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mViewOnMapButton = findViewById(R.id.view_on_map_btn);
     }
 
-    private void requestPermissions() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET)
-                == PackageManager.PERMISSION_GRANTED) {
+    static void maybeRequestPermissionsAndStartObserving(Activity activity) {
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.INTERNET)
+                != PackageManager.PERMISSION_GRANTED) {
             Log.d(TAG, "I made it through");
-            ActivityCompat.requestPermissions(this,
+            ActivityCompat.requestPermissions(activity,
                     new String[]{ Manifest.permission.INTERNET },
                     MY_PERMISSIONS_INTERNET);
         }
@@ -99,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (view.getId() == R.id.view_on_map_btn) {
             Intent intent = new Intent(this, MapFragment.class);
             startActivity(intent);
+            finish();
         }
     }
 }
